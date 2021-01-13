@@ -1,4 +1,4 @@
-package src.type1;
+package type1;
 
 /**
  * 单例模式：饿汉式（静态变量）

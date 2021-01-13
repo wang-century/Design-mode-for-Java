@@ -1,9 +1,10 @@
-package src.type4;
+package type2;
 
 /**
- * 懒汉式（线程安全，同步方法）
+ * 单例模式：饿汉式（静态代码块）
  */
-public class Singleton4 {
+
+public class Singleton2 {
     public static void main(String[] args) {
         // 测试
         Singleton instance = Singleton.getInstance();
@@ -14,20 +15,22 @@ public class Singleton4 {
         System.out.println("instance hashCode:" + instance.hashCode());   // instance hashCode:460141958
         System.out.println("instance2 hashCode:" + instance2.hashCode()); // instance2 hashCode:460141958
     }
-
 }
 
 class Singleton {
-    private static Singleton instance;
-
+    // 1.构造器私有化
     private Singleton() {
     }
 
-    // 提供一个静态的公有方法，当使用到该方法时才去创建instance,加入同步处理的代码，解决线程安全问题
-    public static synchronized Singleton getInstance() {
-        if (instance == null) {
-            instance = new Singleton();
-        }
+    // 2.本类内部创建对象
+    private static Singleton instance;
+
+    static {    // 在静态代码块中创建单例对象
+        instance = new Singleton();
+    }
+
+    // 3.提供一个公有的静态方法，返回实例对象
+    public static Singleton getInstance() {
         return instance;
     }
 }
