@@ -206,7 +206,7 @@ class Singleton {
 
 #### 代码实现
 
-![QQ截图20210113100716](https://i.loli.net/2021/01/13/yRaxGnCAZ7uPoJe.png)
+<a href="https://sm.ms/image/yRaxGnCAZ7uPoJe" target="_blank"><img src="https://i.loli.net/2021/01/13/yRaxGnCAZ7uPoJe.png" alt="QQ截图20210113100716.png"></a>
 
 
 
