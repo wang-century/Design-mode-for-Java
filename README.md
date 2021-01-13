@@ -212,8 +212,138 @@ class Singleton {
 
 ### 双重检查
 
+#### 优缺点
+
+1. Double-Check概念是多线程开发中常使用到的，如代码中所示，我们进行了两次if (singleton == null)检查，这样就可以保证线程安全了。
+2. 这样，实例化代码只用执行一次，后面再次访问时，判断if (singleton == null),直接return实例化对象，也避免的反复进行方法同步.
+3. 线程安全;延迟加载;效率较高
+4. 结论:在实际开发中，推荐使用这种单例设计模式
+
+#### 代码实现
+
+```java
+package type6;
+
+/**
+ * 双重检查
+ */
+
+public class Singleton6 {
+    public static void main(String[] args) {
+        // 测试
+        Singleton instance = Singleton.getInstance();
+        Singleton instance2 = Singleton.getInstance();
+        // 比较内存地址
+        System.out.println(instance == instance2);    // true
+        // 比较hashcode
+        System.out.println("instance hashCode:" + instance.hashCode());   // instance hashCode:460141958
+        System.out.println("instance2 hashCode:" + instance2.hashCode()); // instance2 hashCode:460141958
+
+    }
+}
+
+class Singleton{
+    private static volatile Singleton instance;
+
+    private Singleton(){}
+    // 提供一个静态的公有方法，加入双重检查代码,解决线程安全问题，同时解决懒加载问题
+    public static Singleton getInstance(){
+        if (instance==null){
+            synchronized (Singleton.class){
+                if (instance==null){
+                    instance = new Singleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+```
+
 
 
 ### 静态内部类
 
+#### 优缺点
+
+1. 这种方式采用了类装载的机制来保证初始化实例时只有一个线程。
+2. 静态内部类方式在Singleton类被装载时并不会立即实例化，而是在需要实例化时，调用getInstance方法，才会装载singletonInstance类，从而完成Singleton的实例化。
+3. 类的静态属性只会在第一次加载类的时候初始化，所以在这里，VM帮助我们保证了线程的安全性，在类进行初始化时，别的线程是无法进入的。
+4. 优点:避免了线程不安全，利用静态内部类特点实现延迟加载，效率高
+5. 结论:推荐使用
+
+#### 代码实现
+
+```java
+package type7;
+
+/**
+ * 静态内部类
+ */
+public class Singleton7 {
+    public static void main(String[] args) {
+        // 测试
+        Singleton instance = Singleton.getInstance();
+        Singleton instance2 = Singleton.getInstance();
+        // 比较内存地址
+        System.out.println(instance == instance2);    // true
+        // 比较hashcode
+        System.out.println("instance hashCode:" + instance.hashCode());   // instance hashCode:460141958
+        System.out.println("instance2 hashCode:" + instance2.hashCode()); // instance2 hashCode:460141958
+    }
+}
+
+
+class Singleton{
+    private Singleton(){}
+    // 写一个静态内部类，该类中有一个静态属性Singleton
+    private static class SingletonInstance{
+        private static final Singleton INSTANCE = new Singleton();
+    }
+    public static Singleton getInstance(){
+        return SingletonInstance.INSTANCE;
+    }
+}
+```
+
+
+
 ### 枚举
+
+#### 优缺点
+
+1. 这借助JDK1.5中添加的枚举来实现单例模式。不仅能避免多线程同步问题，而且还能防止反序列化重新创建新的对象。
+2. 这种方式是Effective Java作者Josh Bloch提倡的方式
+3. 结论:推荐使用
+
+#### 代码实现
+
+```java
+package type8;
+
+/**
+ * 单例模式（枚举）
+ */
+
+public class Singleton8 {
+    public static void main(String[] args) {
+        Singleton instance = Singleton.INSTANCE;
+        Singleton instance2 = Singleton.INSTANCE;
+        // 比较内存地址
+        System.out.println(instance==instance2);
+        // 比较hashcode
+        System.out.println("instance hashCode:" + instance.hashCode());   // instance hashCode:460141958
+        System.out.println("instance2 hashCode:" + instance2.hashCode()); // instance2 hashCode:460141958
+        instance.sayOk();
+    }
+}
+
+enum Singleton{
+    INSTANCE;   // 属性
+    public void sayOk(){
+        System.out.println("OK");
+    }
+}
+
+```
+
